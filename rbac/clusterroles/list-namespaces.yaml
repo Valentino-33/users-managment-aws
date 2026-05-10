@@ -1,0 +1,19 @@
+---
+# ClusterRole que permite únicamente listar/ver namespaces del cluster.
+# Se usa vía ClusterRoleBinding para que los developers puedan correr
+# `kubectl get namespaces` sin acceder a recursos dentro de cada namespace.
+# El acceso a recursos (pods, deployments, etc.) lo dan los RoleBindings
+# en rbac/environments/<env>/.
+
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: list-namespaces
+  labels:
+    app.kubernetes.io/managed-by: users-managment-aws
+    rbac.profile: developer
+
+rules:
+  - apiGroups: [""]
+    resources: ["namespaces"]
+    verbs: ["get", "list", "watch"]

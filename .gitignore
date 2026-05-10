@@ -1,0 +1,44 @@
+# Secrets
+keys.json
+*.json.secret
+
+# Terraform
+**/.terraform/
+**/.terraform.lock.hcl
+*.tfstate
+*.tfstate.*
+*.tfplan
+tfplan
+crash.log
+crash.*.log
+
+# Variables y backends — los example sí se versionan, los reales NO
+**/terraform.tfvars
+**/*.auto.tfvars
+**/backend.hcl
+!**/terraform.tfvars.example
+!**/backend.hcl.example
+
+# kubeconfigs locales
+kubeconfig
+*.kubeconfig
+
+# Backups del aws-auth (los crea el script en /tmp pero por las dudas)
+aws-auth-backup-*.yaml
+
+# Archivos OIDC activados (no commitear hasta que se decida usar OIDC)
+oidc/cluster-config.tf
+rbac/bindings/*-oidc.yaml
+
+# Editor
+.idea/
+.vscode/
+*.swp
+.DS_Store
+
+# Secrets
+*.pem
+*.key
+*-credentials*
+.env
+.env.local

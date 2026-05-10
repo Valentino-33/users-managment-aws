@@ -1,0 +1,54 @@
+---
+# ─────────────────────────────────────────────────────────────────────────────
+# Template para crear un nuevo grupo K8s y bindearlo a un ClusterRole.
+#
+# Recordá que en K8s los "Group" no son recursos — son solo etiquetas que se
+# referencian desde aws-auth y desde los Bindings. Para que funcione tenés que:
+#
+#   1. Crear el ClusterRoleBinding (este archivo).
+#   2. Mapear un IAM role/user al nombre del grupo dentro del ConfigMap aws-auth.
+#
+# CÓMO USAR:
+# 1. Copiá este archivo como `rbac/bindings/<nombre>-binding.yaml`.
+# 2. Reemplazá los placeholders.
+# 3. kubectl apply -f rbac/bindings/<nombre>-binding.yaml
+# 4. Editá `aws-auth` para agregar:
+#      - rolearn: arn:aws:iam::<account>:role/<rol>
+#        username: <something>:{{SessionName}}
+#        groups:
+#          - <NOMBRE-GRUPO>     ← debe coincidir EXACTAMENTE con `subjects.name`
+#    Usar el script ./scripts/merge-aws-auth.sh adaptado o `kubectl edit cm`.
+# ─────────────────────────────────────────────────────────────────────────────
+
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: <NOMBRE-BINDING>                # ej: "qa-readonly", "platform-team-admin"
+  labels:
+    app.kubernetes.io/managed-by: users-managment-aws
+
+subjects:
+  - kind: Group
+    name: <NOMBRE-GRUPO-K8S>            # ej: "qa", "platform"
+    apiGroup: rbac.authorization.k8s.io
+
+roleRef:
+  kind: ClusterRole
+  name: <NOMBRE-CLUSTER-ROLE>           # un ClusterRole built-in (view, edit,
+                                        # admin, cluster-admin) o uno custom
+  apiGroup: rbac.authorization.k8s.io
+
+# ─────────────────────────────────────────────────────────────────────────────
+# CLUSTERROLES BUILT-IN MÁS USADOS:
+#
+#   view          - read-only sobre la mayoría de recursos, NO ve secrets
+#                   ni roles. Útil para auditores.
+#   edit          - read/write sobre recursos del namespace, NO toca RBAC ni
+#                   secrets. Útil para developers que despliegan.
+#   admin         - todos los permisos del namespace, INCLUYENDO leer secrets
+#                   y modificar RBAC dentro del namespace.
+#   cluster-admin - superusuario del cluster. Puede borrar el cluster.
+#                   Reservar para infra/operaciones únicamente.
+#
+# Para un perfil custom, ver `new-clusterrole.yaml.template`.
+# ─────────────────────────────────────────────────────────────────────────────

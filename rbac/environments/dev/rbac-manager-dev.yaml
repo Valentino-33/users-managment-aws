@@ -1,0 +1,19 @@
+apiVersion: rbacmanager.reactiveops.io/v1beta1
+kind: RBACDefinition
+metadata:
+  name: rbac-manager-dev-groups
+  labels:
+    app.kubernetes.io/managed-by: users-managment-aws
+    rbac.environment: dev
+rbacBindings:
+  - name: rbb-develop-dev
+    roleBindings:
+      - clusterRole: viewer-no-secrets
+        namespace: belo-challenge-dev
+      - clusterRole: viewer-no-secrets
+        namespace: webserver-api01
+      - clusterRole: viewer-no-secrets
+        namespace: webserver-api02
+    subjects:
+      - kind: Group
+        name: develop

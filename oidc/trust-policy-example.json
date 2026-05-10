@@ -1,0 +1,21 @@
+{
+  "Version": "2012-10-17",
+  "_comment": "Plantilla de trust policy para un IAM role asumido directamente vía OIDC (sin pasar por IAM user). Útil cuando el IDP sí soporta firma cripto del JWT contra AWS STS. Muy típico para CI/CD (GitHub Actions OIDC, GitLab OIDC). Para autenticación humana al cluster EKS usá la integración OIDC nativa de EKS (oidc/cluster-config.tf.disabled), no esta.",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Principal": {
+        "Federated": "arn:aws:iam::650790810564:oidc-provider/REEMPLAZAR-CON-ISSUER"
+      },
+      "Action": "sts:AssumeRoleWithWebIdentity",
+      "Condition": {
+        "StringEquals": {
+          "REEMPLAZAR-CON-ISSUER:aud": "REEMPLAZAR-CON-AUDIENCE"
+        },
+        "StringLike": {
+          "REEMPLAZAR-CON-ISSUER:sub": "repo:Valentino-33/*:ref:refs/heads/main"
+        }
+      }
+    }
+  ]
+}

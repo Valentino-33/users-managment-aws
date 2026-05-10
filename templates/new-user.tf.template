@@ -1,0 +1,47 @@
+# ─────────────────────────────────────────────────────────────────────────────
+# Template para agregar un IAM user a un grupo existente.
+#
+# CÓMO USAR:
+# 1. Copiá este archivo como `iam/user-NOMBRE.tf` (sin la extensión .template).
+# 2. Reemplazá los placeholders <ENTRE-CHEVRONES> con valores reales.
+# 3. Decidí a qué IAM group pertenece (developers o infra-operators).
+# 4. terraform apply.
+#
+# El access key se va a generar como output sensible. Visualízalo con:
+#   terraform output -json access_keys
+# Y guardá las credenciales en un password manager.
+# ─────────────────────────────────────────────────────────────────────────────
+
+resource "aws_iam_user" "<NOMBRE_TF>" {
+  name = "<NOMBRE-USER>"               # ej: "dev-user-02" o "alice"
+  path = "/${var.cluster_name}/"
+  force_destroy = true
+
+  tags = {
+    role  = "<developer-O-infra-operator>"
+    group = "<developers-O-infra-operators>"
+  }
+}
+
+resource "aws_iam_user_group_membership" "<NOMBRE_TF>" {
+  user   = aws_iam_user.<NOMBRE_TF>.name
+  groups = [aws_iam_group.<developers-O-infra_operators>.name]
+  #                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  #            elegí UNO. Para el group infra es "infra_operators" (con guión bajo).
+}
+
+resource "aws_iam_access_key" "<NOMBRE_TF>" {
+  count = var.create_access_keys ? 1 : 0
+  user  = aws_iam_user.<NOMBRE_TF>.name
+}
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Alternativa: en lugar de agregar un archivo nuevo por cada user, mantener
+# todos los users en `iam/users.tf` y solo agregar el nombre a la lista de
+# variables `developers` o `infra_operators` en terraform.tfvars:
+#
+#   developers = ["dev-user-01", "dev-user-02", "alice"]
+#
+# El módulo ya itera `for_each` sobre esa lista. Más limpio si los users no
+# necesitan configuración custom.
+# ─────────────────────────────────────────────────────────────────────────────

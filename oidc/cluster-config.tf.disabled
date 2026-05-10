@@ -1,0 +1,55 @@
+# ─────────────────────────────────────────────────────────────────────────────
+# OIDC Identity Provider Config — DESHABILITADO
+#
+# Para activar:
+#   1. Renombrar este archivo a `iam/cluster-config.tf` (sin `.disabled`).
+#   2. Editar los valores con los datos del IDP real.
+#   3. Mover este archivo desde oidc/ a iam/ (o crear un módulo aparte).
+#   4. terraform plan && terraform apply.
+#
+# Ver oidc/README.md para detalles.
+# ─────────────────────────────────────────────────────────────────────────────
+
+resource "aws_eks_identity_provider_config" "oidc" {
+  cluster_name = var.cluster_name
+
+  oidc {
+    identity_provider_config_name = "external-idp"
+
+    # ─── EDITAR ESTOS VALORES ───
+    issuer_url      = "https://accounts.google.com"   # o el de Okta, Auth0, etc.
+    client_id       = "REEMPLAZAR-CON-CLIENT-ID-DEL-IDP"
+
+    # Claim del ID token que lleva el username. Para Google: "email".
+    # Para Okta: configurar para que devuelva el email.
+    username_claim  = "email"
+
+    # Prefix que se antepone al username para evitar colisiones con system users.
+    username_prefix = "oidc:"
+
+    # Claim que lleva los grupos. Para Google Workspace requiere groups API
+    # adicional; para Okta/Auth0 se configura en el provider.
+    groups_claim    = "groups"
+
+    # Prefix que se antepone a los grupos. Por eso los bindings OIDC usan
+    # `oidc:develop` y `oidc:Infra` en lugar de `develop` e `Infra`.
+    groups_prefix   = "oidc:"
+
+    # Si querés filtrar audiencias permitidas (typical es client_id):
+    # required_claims = {
+    #   "aud" = "REEMPLAZAR-CON-CLIENT-ID-DEL-IDP"
+    # }
+  }
+
+  tags = {
+    purpose = "human-authentication"
+  }
+}
+
+output "oidc_provider_status" {
+  description = "Estado del OIDC provider config en EKS."
+  value = {
+    name   = aws_eks_identity_provider_config.oidc.oidc[0].identity_provider_config_name
+    status = aws_eks_identity_provider_config.oidc.status
+  }
+}

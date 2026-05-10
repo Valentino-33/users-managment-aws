@@ -1,0 +1,34 @@
+---
+# ─────────────────────────────────────────────────────────────────────────────
+# Binding paralelo al de IAM, pero para usuarios autenticados via OIDC.
+#
+# Diferencia única con `develop-binding.yaml`: el grupo lleva el prefijo
+# `oidc:` que viene de la config del IDP en `cluster-config.tf`.
+#
+# Cuando OIDC está activo, kubectl recibe un ID token, EKS lo valida contra
+# el IDP, extrae el claim `groups`, le antepone `oidc:` y se lo pasa a RBAC.
+# Por eso este binding usa `oidc:develop` y NO `develop`.
+#
+# Para activar:
+#   mv oidc/bindings-oidc/develop-binding.yaml.disabled \
+#      rbac/bindings/develop-binding-oidc.yaml
+#   kubectl apply -f rbac/bindings/develop-binding-oidc.yaml
+# ─────────────────────────────────────────────────────────────────────────────
+
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: develop-viewer-oidc
+  labels:
+    app.kubernetes.io/managed-by: users-managment-aws
+    auth.method: oidc
+
+subjects:
+  - kind: Group
+    name: oidc:develop                  # <- prefix del groups_prefix de OIDC
+    apiGroup: rbac.authorization.k8s.io
+
+roleRef:
+  kind: ClusterRole
+  name: viewer-no-secrets
+  apiGroup: rbac.authorization.k8s.io

@@ -1,0 +1,60 @@
+---
+# ─────────────────────────────────────────────────────────────────────────────
+# Template para crear un nuevo ClusterRole con un perfil de permisos custom.
+#
+# CÓMO USAR:
+# 1. Copiá este archivo como `rbac/clusterroles/<nombre>.yaml`.
+# 2. Reemplazá <NOMBRE-CLUSTER-ROLE> con el nombre que quieras.
+# 3. Editá las reglas según los permisos que tenga que tener.
+# 4. kubectl apply -f rbac/clusterroles/<nombre>.yaml
+# 5. Después tenés que crear un ClusterRoleBinding (ver template
+#    new-group-binding.yaml.template) que enchufe este rol con un grupo.
+#
+# REFERENCIA RÁPIDA DE VERBS:
+#   - get, list, watch       → lectura
+#   - create, update, patch  → modificación
+#   - delete, deletecollection → borrado
+#   - "*"                    → cualquier verb
+#
+# RESOURCES de uso frecuente:
+#   - "" (core API): pods, services, configmaps, secrets, namespaces, nodes...
+#   - apps:          deployments, statefulsets, daemonsets, replicasets
+#   - networking.k8s.io: ingresses, networkpolicies
+#   - batch:         jobs, cronjobs
+#   - argoproj.io:   applications, rollouts, ...
+# ─────────────────────────────────────────────────────────────────────────────
+
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: <NOMBRE-CLUSTER-ROLE>           # ej: "platform-engineer", "qa-readonly"
+  labels:
+    app.kubernetes.io/managed-by: users-managment-aws
+    rbac.profile: <CATEGORIA>           # ej: "intermediate", "qa", "auditor"
+
+rules:
+  # Ejemplo 1: lectura completa salvo secrets (igual que viewer-no-secrets pero
+  # más conciso usando el flag de exclusión).
+  - apiGroups: [""]
+    resources: ["pods", "services", "configmaps", "namespaces"]
+    verbs: ["get", "list", "watch"]
+
+  # Ejemplo 2: permitir crear y modificar deployments
+  # - apiGroups: ["apps"]
+  #   resources: ["deployments"]
+  #   verbs: ["get", "list", "watch", "create", "update", "patch"]
+
+  # Ejemplo 3: permitir ver logs de pods (atención, los logs pueden contener secrets)
+  # - apiGroups: [""]
+  #   resources: ["pods/log"]
+  #   verbs: ["get", "list"]
+
+  # Ejemplo 4: permitir port-forward (debugging)
+  # - apiGroups: [""]
+  #   resources: ["pods/portforward"]
+  #   verbs: ["create"]
+
+  # Ejemplo 5: permitir todo sobre un CRD específico (ArgoRollouts)
+  # - apiGroups: ["argoproj.io"]
+  #   resources: ["rollouts"]
+  #   verbs: ["*"]

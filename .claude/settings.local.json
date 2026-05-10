@@ -1,0 +1,41 @@
+{
+  "permissions": {
+    "allow": [
+      "PowerShell(winget *)",
+      "PowerShell(jq *)",
+      "PowerShell(Get-Command *)",
+      "PowerShell(Get-ChildItem *)",
+      "PowerShell(cmd /c \"dir `\"C:\\\\Users\\\\tadeo\\\\AppData\\\\Local\\\\Microsoft\\\\WinGet\\\\Packages\\\\jqlang.jq_Microsoft.Winget.Source_8wekyb3d8bbwe`\"\" 2>&1)",
+      "PowerShell(cmd /c \"dir `\"C:\\\\Users\\\\tadeo\\\\AppData\\\\Local\\\\Programs\\\\Python\\\\Python313`\"\" 2>&1)",
+      "PowerShell(cmd /c \"where python\" 2>&1)",
+      "PowerShell(cmd /c \"python --version\" 2>&1)",
+      "Bash(make rbac-apply *)",
+      "Bash(Remove-Item *)",
+      "PowerShell(New-Item *)",
+      "Bash(make rbac-manager-install *)",
+      "PowerShell(helm version *)",
+      "PowerShell(make rbac-manager-install *)",
+      "PowerShell(kubectl config *)",
+      "PowerShell($env:PATH = [System.Environment]::GetEnvironmentVariable\\(\"PATH\", \"Machine\"\\) + \";\" + [System.Environment]::GetEnvironmentVariable\\(\"PATH\", \"User\"\\); kubectl --context belo-challenge-dev auth can-i list secrets -n kube-system 2>&1)",
+      "PowerShell($env:PATH = [System.Environment]::GetEnvironmentVariable\\(\"PATH\", \"Machine\"\\) + \";\" + [System.Environment]::GetEnvironmentVariable\\(\"PATH\", \"User\"\\); kubectl --context \"arn:aws:eks:us-east-1:650790810564:cluster/belo-challenge-dev\" get configmap aws-auth -n kube-system -o yaml 2>&1)",
+      "PowerShell(Select-String *)",
+      "PowerShell(head *)",
+      "PowerShell($env:PATH = [System.Environment]::GetEnvironmentVariable\\(\"PATH\", \"Machine\"\\) + \";\" + [System.Environment]::GetEnvironmentVariable\\(\"PATH\", \"User\"\\); kubectl --context \"arn:aws:eks:us-east-1:650790810564:cluster/belo-challenge-dev\" get clusterrolebinding 2>&1 | Select-Object -First 30)",
+      "PowerShell(aws sts get-caller-identity *)",
+      "PowerShell(aws eks update-kubeconfig *)",
+      "PowerShell(kubectl config use-context *)",
+      "Bash(aws sts *)",
+      "Bash(kubectl config *)",
+      "Bash(kubectl cluster-info *)",
+      "Bash(aws configure list-profiles *)",
+      "Bash(kubectl *)",
+      "Bash(aws eks update-kubeconfig *)",
+      "Bash(Start-Sleep -Seconds 5)",
+      "Bash(aws configure *)",
+      "Bash(make verify-developer *)",
+      "Bash(python3 -c ' *)",
+      "Bash(make rbac-migrate *)",
+      "Bash(make verify-infra *)"
+    ]
+  }
+}
