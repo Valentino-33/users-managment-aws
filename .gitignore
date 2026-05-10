@@ -1,6 +1,8 @@
 # Secrets
 keys.json
 *.json.secret
+salidas-primerainstancia.txt
+salidasIAM.txt
 
 # Terraform
 **/.terraform/
