@@ -260,6 +260,16 @@ acceso total al cluster.
 > aws eks update-kubeconfig --name belo-challenge-dev --region us-east-1 --alias admin-ctx
 > ```
 
+> **Account ID:** los targets `verify-developer` y `verify-infra` usan la variable
+> `ACCOUNT` del Makefile, que tiene el valor por defecto `650790810564`. Si tu
+> cuenta AWS es otra, pasala como override:
+> ```bash
+> ACCOUNT=$(aws sts get-caller-identity --query Account --output text)
+> make verify-developer ACCOUNT=$ACCOUNT
+> make verify-infra ACCOUNT=$ACCOUNT
+> ```
+> O editá la línea `ACCOUNT ?= ...` en el `Makefile` con tu account ID.
+
 ## Cómo se loguea un developer (paso a paso)
 
 Después de que un admin creó las access keys IAM y se las pasó al developer:

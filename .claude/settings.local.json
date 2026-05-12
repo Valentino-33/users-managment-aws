@@ -40,7 +40,16 @@
       "Bash(git reset *)",
       "Bash(git restore *)",
       "Bash(git add *)",
-      "Bash(git commit *)"
+      "Bash(git commit *)",
+      "Bash(Get-Content salidasIAM.txt)",
+      "Bash(git filter-repo *)",
+      "Bash(git filter-branch *)",
+      "Bash(git stash *)",
+      "Bash(FILTER_BRANCH_SQUELCH_WARNING=1 git filter-branch --force --index-filter \"git rm --cached --ignore-unmatch salidasIAM.txt\" --prune-empty --tag-name-filter cat -- --all)",
+      "Bash(xargs -r git update-ref -d)",
+      "Bash(git reflog *)",
+      "Bash(git gc *)",
+      "Bash(git update-ref *)"
     ]
   }
 }
